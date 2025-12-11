@@ -1,0 +1,241 @@
+/* styles.css */
+
+:root {
+    --background: #f9f8f4;  /* blanc cassé */
+    --text: #000000;
+    --accent-b: #0010a0;
+    --accent-g: #368768;
+    /* --header-bg: #B2B7E2;
+    --about-bg: #B2B7E2;; */
+    --header-bg: #cfe3f7af;
+    --about-bg: #9dd1ffea;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 10px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: var(--header-bg);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    z-index: 1000;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--accent-b);
+}
+
+.section {
+    padding: 10px 20px 10px; /* top, sides, bottom */
+    max-width: 900px;
+    margin: auto;
+}
+
+#about {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    text-align: left;
+    background: var(--about-bg); 
+    border-radius: 16px; 
+    padding: 40px; 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); 
+}
+
+.about-image {
+    text-align: center;
+    margin: 30px;
+}
+
+.about-image img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 100px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.about-image h2 {
+    margin: 15px 0 5px;
+}
+
+.about-image p {
+    margin: 0 0 10px;
+    font-size: 0.9em;
+    color: #000000;
+}
+
+.social-icons a {
+    margin: 0 8px;
+    font-size: 20px;
+    color: var(--text);
+    transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent-b);
+}
+
+.description {
+    flex: 1;
+    min-width: 280px;
+    margin: 20px;
+    text-align: left;
+}
+
+/* Timeline Experience Styling */
+#experience {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#experience::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 25%;
+    height: 65%;
+    width: 2px;
+    background: var(--accent-b);
+}
+
+.timeline-entry {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin: 40px 0 40px 60px;
+    text-align: left;
+}
+
+.timeline-entry::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 16px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-b);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.timeline-entry img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-right: 30px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: white;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-entry h4 {
+    margin: 0 0 5px;
+}
+
+.timeline-entry p {
+    margin: 0;
+    color: #000000;
+}
+
+.paper-entry .col-md-12.text-muted {
+    color: #000000;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+/* Papers Section */
+
+/* #papers {
+    max-width: 200px;
+    margin: auto;
+} */
+
+#papers h3 {
+    margin-top: 25px;
+    color: var(--accent-br);
+    font-weight: 600;
+    margin-bottom: 0px;
+}
+
+h3.text-muted {
+    margin-top: 20px;   /* reduce space above each year */
+    margin-bottom: 0px; /* reduce space below each year */
+}
+
+.paper-entry {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    margin-top: 0px;    /* space before each paper title */
+    margin-bottom: 0px;
+}
+
+.paper-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    margin-top: 0px;
+}
+
+.paper-authors {
+    font-size: 0.95rem;
+    color: #000000;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.paper-info {
+    font-size: 0.9rem;
+    color: #000000;
+    margin-bottom: 8px;
+}
+
+.paper-links a {
+    color: var(--accent-hl);
+    font-weight: 500;
+}
+
+.paper-links a:hover {
+    color: var(--accent-br);
+}
+
+.contrib-note {
+    font-size: 0.8rem;
+    color: #6e6e6e;
+    margin-top: 4px;
+    font-style: italic;
+}
