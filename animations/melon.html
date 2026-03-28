@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dancing Melon</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f9f8f4; }
+
+  .dancing-melon {
+      animation: melon-groove 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-groove {
+      0% { transform: translateX(0) translateY(0) rotate(0deg); }
+      6.25% { transform: translateX(-3px) translateY(-4px) rotate(-5deg); }
+      12.5% { transform: translateX(0) translateY(0) rotate(0deg); }
+      18.75% { transform: translateX(3px) translateY(-4px) rotate(5deg); }
+      25% { transform: translateX(0) translateY(0) rotate(0deg); }
+      31.25% { transform: translateX(-3px) translateY(-4px) rotate(-5deg); }
+      37.5% { transform: translateX(0) translateY(0) rotate(0deg); }
+      43.75% { transform: translateX(3px) translateY(-4px) rotate(5deg); }
+      50% { transform: translateX(0) translateY(0) rotate(0deg); }
+      100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  }
+
+  .melon-wave-arm {
+      transform-origin: 11px 26px;
+      animation: melon-arm-l 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-arm-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(20deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-20deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(20deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-20deg); }
+      50% { transform: rotate(-80deg); }
+      58% { transform: rotate(50deg); }
+      66% { transform: rotate(-80deg); }
+      74% { transform: rotate(50deg); }
+      82% { transform: rotate(-80deg); }
+      90% { transform: rotate(50deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .melon-right-arm {
+      transform-origin: 39px 26px;
+      animation: melon-arm-r 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-arm-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(20deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-20deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(20deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-20deg); }
+      50% { transform: rotate(95deg); }
+      100% { transform: rotate(95deg); }
+  }
+
+  .melon-left-forearm {
+      transform-origin: 5px 21px;
+      animation: melon-forearm-l 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-forearm-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(15deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-15deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(15deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-15deg); }
+      50% { transform: rotate(-20deg); }
+      58% { transform: rotate(15deg); }
+      66% { transform: rotate(-20deg); }
+      74% { transform: rotate(15deg); }
+      82% { transform: rotate(-20deg); }
+      90% { transform: rotate(15deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .melon-right-forearm {
+      transform-origin: 45px 21px;
+      animation: melon-forearm-r 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-forearm-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(15deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-15deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(15deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-15deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .melon-left-leg {
+      transform-origin: 18px 40px;
+      animation: melon-leg-l 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-leg-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(-20deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(5deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(-20deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(5deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .melon-right-leg {
+      transform-origin: 32px 40px;
+      animation: melon-leg-r 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-leg-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(-5deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(20deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(-5deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(20deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .melon-left-shin {
+      transform-origin: 16px 48px;
+      animation: melon-shin-l 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-shin-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(30deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-5deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(30deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-5deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .melon-right-shin {
+      transform-origin: 34px 48px;
+      animation: melon-shin-r 4s ease-in-out infinite;
+  }
+
+  @keyframes melon-shin-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(5deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-30deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(5deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-30deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .melon-tendril {
+      transform-origin: 25px 8px;
+      animation: melon-tendril-wiggle 2s ease-in-out infinite;
+  }
+
+  @keyframes melon-tendril-wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg); }
+      75% { transform: rotate(-10deg); }
+  }
+</style>
+</head>
+<body>
+
+<svg class="dancing-melon" width="200" height="250" viewBox="-5 0 60 65" xmlns="http://www.w3.org/2000/svg">
+    <!-- Tendril/vine on top -->
+    <g class="melon-tendril">
+        <!-- Stem -->
+        <path d="M25 11 Q25 7 26 4" stroke="#3a7a2a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- Curly tendril with clear spiral loops -->
+        <path d="M26 4 C28 -2 34 -1 33 4 C32 8 27 7 28 3 C29 0 35 1 34 5 C33 8 38 6 40 3 C42 0 44 3 43 5 C42 7 40 6 41 4" stroke="#2d6a20" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <!-- Left leaf -->
+        <path d="M24 7 Q17 2 14 4 Q15 7 24 7Z" fill="#4aaa4a"/>
+        <path d="M24 7 Q18 3.5 15 4.5" stroke="#2d7a2d" stroke-width="0.5" fill="none"/>
+        <!-- Right leaf -->
+        <path d="M26 7 Q33 2 36 4 Q35 7 26 7Z" fill="#5cb85c"/>
+        <path d="M26 7 Q32 3.5 35 4.5" stroke="#2d7a2d" stroke-width="0.5" fill="none"/>
+    </g>
+
+    <!-- Body - oval melon shape -->
+    <ellipse cx="25" cy="26" rx="14" ry="15" fill="#9ecc72"/>
+    <ellipse cx="25" cy="26" rx="14" ry="15" fill="none" stroke="#7aaa55" stroke-width="0.5"/>
+
+    <!-- Faint irregular net texture -->
+    <path d="M13 19 Q18 17 23 20 Q28 18 37 20" stroke="#7aaa55" stroke-width="0.3" fill="none" opacity="0.15"/>
+    <path d="M12 25 Q17 27 22 24 Q28 27 38 25" stroke="#7aaa55" stroke-width="0.3" fill="none" opacity="0.15"/>
+    <path d="M13 31 Q19 33 24 30 Q30 33 37 31" stroke="#7aaa55" stroke-width="0.3" fill="none" opacity="0.15"/>
+    <path d="M17 14 Q20 20 16 28 Q19 34 17 38" stroke="#7aaa55" stroke-width="0.3" fill="none" opacity="0.12"/>
+    <path d="M33 14 Q30 20 34 28 Q31 34 33 38" stroke="#7aaa55" stroke-width="0.3" fill="none" opacity="0.12"/>
+
+    <!-- Vertical rind lines (primary) -->
+    <path d="M25 12 Q24 26 25 40" stroke="#6a9a48" stroke-width="0.7" fill="none" opacity="0.35"/>
+    <path d="M19 14 Q18 26 19 38" stroke="#6a9a48" stroke-width="0.6" fill="none" opacity="0.3"/>
+    <path d="M31 14 Q32 26 31 38" stroke="#6a9a48" stroke-width="0.6" fill="none" opacity="0.3"/>
+    <path d="M14 18 Q13.5 26 14 34" stroke="#6a9a48" stroke-width="0.5" fill="none" opacity="0.22"/>
+    <path d="M36 18 Q36.5 26 36 34" stroke="#6a9a48" stroke-width="0.5" fill="none" opacity="0.22"/>
+
+    <!-- Lighter highlight -->
+    <ellipse cx="22" cy="23" rx="6" ry="7" fill="#b0dd88" opacity="0.25"/>
+
+    <!-- Eyes -->
+    <circle cx="21" cy="24" r="1.4" fill="#2a1a0a"/>
+    <circle cx="29" cy="24" r="1.4" fill="#2a1a0a"/>
+
+    <!-- Smile -->
+    <path d="M20 29 Q25 33 30 29" stroke="#2a1a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+    <!-- Left arm -->
+    <g class="melon-wave-arm">
+        <line x1="11" y1="26" x2="5" y2="21" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="melon-left-forearm">
+            <line x1="5" y1="21" x2="1" y2="16" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="1" cy="16" r="1.5" fill="#2a1a0a"/>
+        </g>
+    </g>
+
+    <!-- Right arm -->
+    <g class="melon-right-arm">
+        <line x1="39" y1="26" x2="45" y2="21" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="melon-right-forearm">
+            <line x1="45" y1="21" x2="49" y2="16" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="49" cy="16" r="1.5" fill="#2a1a0a"/>
+        </g>
+    </g>
+
+    <!-- Left leg -->
+    <g class="melon-left-leg">
+        <line x1="18" y1="40" x2="16" y2="48" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="melon-left-shin">
+            <line x1="16" y1="48" x2="14" y2="56" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M14 56 Q11 57 10 56" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </g>
+    </g>
+
+    <!-- Right leg -->
+    <g class="melon-right-leg">
+        <line x1="32" y1="40" x2="34" y2="48" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="melon-right-shin">
+            <line x1="34" y1="48" x2="36" y2="56" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M36 56 Q39 57 40 56" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </g>
+    </g>
+</svg>
+
+</body>
+</html>

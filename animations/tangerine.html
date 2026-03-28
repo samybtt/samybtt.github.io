@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dancing Tangerine</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f9f8f4; }
+
+  .dancing-tangerine {
+      animation: tangerine-groove 4s ease-in-out infinite;
+  }
+
+  @keyframes tangerine-groove {
+      0% { transform: translateX(0) translateY(0) rotate(0deg); }
+      6.25% { transform: translateX(-3px) translateY(-4px) rotate(-5deg); }
+      12.5% { transform: translateX(0) translateY(0) rotate(0deg); }
+      18.75% { transform: translateX(3px) translateY(-4px) rotate(5deg); }
+      25% { transform: translateX(0) translateY(0) rotate(0deg); }
+      31.25% { transform: translateX(-3px) translateY(-4px) rotate(-5deg); }
+      37.5% { transform: translateX(0) translateY(0) rotate(0deg); }
+      43.75% { transform: translateX(3px) translateY(-4px) rotate(5deg); }
+      50% { transform: translateX(0) translateY(0) rotate(0deg); }
+      100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  }
+
+  .tangerine-wave-arm {
+      transform-origin: 11px 24px;
+      animation: tangerine-arm-l 4s ease-in-out infinite;
+  }
+
+  @keyframes tangerine-arm-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(20deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-20deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(20deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-20deg); }
+      50% { transform: rotate(-80deg); }
+      58% { transform: rotate(50deg); }
+      66% { transform: rotate(-80deg); }
+      74% { transform: rotate(50deg); }
+      82% { transform: rotate(-80deg); }
+      90% { transform: rotate(50deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .tangerine-right-arm {
+      transform-origin: 33px 24px;
+      animation: tangerine-arm-r 4s ease-in-out infinite;
+  }
+
+  @keyframes tangerine-arm-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(20deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-20deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(20deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-20deg); }
+      50% { transform: rotate(95deg); }
+      100% { transform: rotate(95deg); }
+  }
+
+  .tangerine-left-forearm {
+      transform-origin: 5px 20px;
+      animation: forearm-l 4s ease-in-out infinite;
+  }
+
+  @keyframes forearm-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(15deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-15deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(15deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-15deg); }
+      50% { transform: rotate(-20deg); }
+      58% { transform: rotate(15deg); }
+      66% { transform: rotate(-20deg); }
+      74% { transform: rotate(15deg); }
+      82% { transform: rotate(-20deg); }
+      90% { transform: rotate(15deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .tangerine-right-forearm {
+      transform-origin: 39px 20px;
+      animation: forearm-r 4s ease-in-out infinite;
+  }
+
+  @keyframes forearm-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(15deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-15deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(15deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-15deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .tangerine-left-leg {
+      transform-origin: 17px 35px;
+      animation: tangerine-leg-l 4s ease-in-out infinite;
+  }
+
+  @keyframes tangerine-leg-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(-20deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(5deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(-20deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(5deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .tangerine-right-leg {
+      transform-origin: 27px 35px;
+      animation: tangerine-leg-r 4s ease-in-out infinite;
+  }
+
+  @keyframes tangerine-leg-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(-5deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(20deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(-5deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(20deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .tangerine-left-shin {
+      transform-origin: 15px 42px;
+      animation: shin-l 4s ease-in-out infinite;
+  }
+
+  @keyframes shin-l {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(30deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-5deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(30deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-5deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .tangerine-right-shin {
+      transform-origin: 29px 42px;
+      animation: shin-r 4s ease-in-out infinite;
+  }
+
+  @keyframes shin-r {
+      0% { transform: rotate(0deg); }
+      6.25% { transform: rotate(5deg); }
+      12.5% { transform: rotate(0deg); }
+      18.75% { transform: rotate(-30deg); }
+      25% { transform: rotate(0deg); }
+      31.25% { transform: rotate(5deg); }
+      37.5% { transform: rotate(0deg); }
+      43.75% { transform: rotate(-30deg); }
+      50% { transform: rotate(0deg); }
+      100% { transform: rotate(0deg); }
+  }
+
+  .tangerine-leaf {
+      transform-origin: 22px 7px;
+      animation: tangerine-leaf-wiggle 2s ease-in-out infinite;
+  }
+
+  @keyframes tangerine-leaf-wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg); }
+      75% { transform: rotate(-10deg); }
+  }
+</style>
+</head>
+<body>
+
+<svg class="dancing-tangerine" width="200" height="250" viewBox="-2 0 48 58" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="tg-leaf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#5cb85c"/>
+            <stop offset="100%" stop-color="#2d7a2d"/>
+        </linearGradient>
+        <linearGradient id="tg-leaf2" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#6fcf6f"/>
+            <stop offset="100%" stop-color="#3a8c3a"/>
+        </linearGradient>
+    </defs>
+    <!-- Stem -->
+    <path d="M22 12 Q22.5 8 22 5" stroke="#5a7a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <!-- Leaves -->
+    <g class="tangerine-leaf">
+        <path d="M22 7 Q28 2 32 5 Q28 6 22 7Z" fill="url(#tg-leaf1)" opacity="0.9"/>
+        <path d="M22 7 Q27 3.5 30 5.5" stroke="#3a6a2a" stroke-width="0.4" fill="none"/>
+        <path d="M22 8 Q16 3 12 5 Q16 7 22 8Z" fill="url(#tg-leaf2)" opacity="0.85"/>
+        <path d="M22 8 Q17 4.5 14 5.5" stroke="#3a6a2a" stroke-width="0.4" fill="none"/>
+    </g>
+    <!-- Body -->
+    <circle cx="22" cy="24" r="11" fill="#ff8c2e"/>
+    <circle cx="22" cy="24" r="11" fill="none" stroke="#e07520" stroke-width="0.5"/>
+    <!-- Eyes -->
+    <circle cx="18" cy="22" r="1.2" fill="#2a1a0a"/>
+    <circle cx="26" cy="22" r="1.2" fill="#2a1a0a"/>
+    <!-- Smile -->
+    <path d="M18 27 Q22 30 26 27" stroke="#2a1a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <!-- Left arm -->
+    <g class="tangerine-wave-arm">
+        <line x1="11" y1="24" x2="5" y2="20" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="tangerine-left-forearm">
+            <line x1="5" y1="20" x2="1" y2="16" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="1" cy="16" r="1.5" fill="#2a1a0a"/>
+        </g>
+    </g>
+    <!-- Right arm -->
+    <g class="tangerine-right-arm">
+        <line x1="33" y1="24" x2="39" y2="20" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="tangerine-right-forearm">
+            <line x1="39" y1="20" x2="43" y2="16" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="43" cy="16" r="1.5" fill="#2a1a0a"/>
+        </g>
+    </g>
+    <!-- Left leg -->
+    <g class="tangerine-left-leg">
+        <line x1="17" y1="35" x2="15" y2="42" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="tangerine-left-shin">
+            <line x1="15" y1="42" x2="13" y2="50" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M13 50 Q10 51 9 50" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </g>
+    </g>
+    <!-- Right leg -->
+    <g class="tangerine-right-leg">
+        <line x1="27" y1="35" x2="29" y2="42" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+        <g class="tangerine-right-shin">
+            <line x1="29" y1="42" x2="31" y2="50" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M31 50 Q34 51 35 50" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </g>
+    </g>
+</svg>
+
+</body>
+</html>

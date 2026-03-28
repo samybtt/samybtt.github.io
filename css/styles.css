@@ -228,7 +228,7 @@ nav a.active {
     flex-wrap: wrap;
     text-align: left;
     padding: 40px 40px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px dashed var(--border);
 }
 
 .about-image {
@@ -286,17 +286,16 @@ nav a.active {
     color: var(--accent-b);
 }
 
-/* ====== DANCING TANGERINE ====== */
+/* ====== DANCING MELON ====== */
 
-.dancing-tangerine {
+.dancing-melon {
     display: inline-block;
     vertical-align: middle;
     margin-left: 10px;
-    animation: tangerine-groove 4s ease-in-out infinite;
+    animation: melon-groove 4s ease-in-out infinite;
 }
 
-@keyframes tangerine-groove {
-    /* Dance phase: 0-50% */
+@keyframes melon-groove {
     0% { transform: translateX(0) translateY(0) rotate(0deg); }
     6.25% { transform: translateX(-3px) translateY(-4px) rotate(-5deg); }
     12.5% { transform: translateX(0) translateY(0) rotate(0deg); }
@@ -306,35 +305,32 @@ nav a.active {
     37.5% { transform: translateX(0) translateY(0) rotate(0deg); }
     43.75% { transform: translateX(3px) translateY(-4px) rotate(5deg); }
     50% { transform: translateX(0) translateY(0) rotate(0deg); }
-    /* Wave phase: 50-100% (still) */
     100% { transform: translateX(0) translateY(0) rotate(0deg); }
 }
 
 /* Dark mode: white limbs */
-[data-theme="dark"] .tangerine-wave-arm line,
-[data-theme="dark"] .tangerine-right-arm line,
-[data-theme="dark"] .tangerine-left-leg line,
-[data-theme="dark"] .tangerine-right-leg line,
-[data-theme="dark"] .tangerine-left-leg path,
-[data-theme="dark"] .tangerine-right-leg path,
-[data-theme="dark"] .tangerine-left-forearm line,
-[data-theme="dark"] .tangerine-right-forearm line {
+[data-theme="dark"] .melon-wave-arm line,
+[data-theme="dark"] .melon-right-arm line,
+[data-theme="dark"] .melon-left-leg line,
+[data-theme="dark"] .melon-right-leg line,
+[data-theme="dark"] .melon-left-leg path,
+[data-theme="dark"] .melon-right-leg path,
+[data-theme="dark"] .melon-left-forearm line,
+[data-theme="dark"] .melon-right-forearm line {
     stroke: #e4e4e7;
 }
 
-[data-theme="dark"] .tangerine-left-forearm circle,
-[data-theme="dark"] .tangerine-right-forearm circle {
+[data-theme="dark"] .melon-left-forearm circle,
+[data-theme="dark"] .melon-right-forearm circle {
     fill: #e4e4e7;
 }
 
-/* Left arm: dance then wave */
-.tangerine-wave-arm {
-    transform-origin: 11px 24px;
-    animation: tangerine-arm-l 4s ease-in-out infinite;
+.melon-wave-arm {
+    transform-origin: 11px 26px;
+    animation: melon-arm-l 4s ease-in-out infinite;
 }
 
-@keyframes tangerine-arm-l {
-    /* Dance */
+@keyframes melon-arm-l {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(20deg); }
     12.5% { transform: rotate(0deg); }
@@ -344,7 +340,6 @@ nav a.active {
     37.5% { transform: rotate(0deg); }
     43.75% { transform: rotate(-20deg); }
     50% { transform: rotate(-80deg); }
-    /* Wave - arm raised high */
     58% { transform: rotate(50deg); }
     66% { transform: rotate(-80deg); }
     74% { transform: rotate(50deg); }
@@ -353,13 +348,12 @@ nav a.active {
     100% { transform: rotate(0deg); }
 }
 
-/* Right arm: dance then still */
-.tangerine-right-arm {
-    transform-origin: 33px 24px;
-    animation: tangerine-arm-r 4s ease-in-out infinite;
+.melon-right-arm {
+    transform-origin: 39px 26px;
+    animation: melon-arm-r 4s ease-in-out infinite;
 }
 
-@keyframes tangerine-arm-r {
+@keyframes melon-arm-r {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(20deg); }
     12.5% { transform: rotate(0deg); }
@@ -372,18 +366,17 @@ nav a.active {
     100% { transform: rotate(95deg); }
 }
 
-/* Legs: dance then stand */
-.tangerine-left-leg {
-    transform-origin: 17px 35px;
-    animation: tangerine-leg-l 4s ease-in-out infinite;
+.melon-left-leg {
+    transform-origin: 18px 40px;
+    animation: melon-leg-l 4s ease-in-out infinite;
 }
 
-.tangerine-right-leg {
-    transform-origin: 27px 35px;
-    animation: tangerine-leg-r 4s ease-in-out infinite;
+.melon-right-leg {
+    transform-origin: 32px 40px;
+    animation: melon-leg-r 4s ease-in-out infinite;
 }
 
-@keyframes tangerine-leg-l {
+@keyframes melon-leg-l {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(-20deg); }
     12.5% { transform: rotate(0deg); }
@@ -396,7 +389,7 @@ nav a.active {
     100% { transform: rotate(0deg); }
 }
 
-@keyframes tangerine-leg-r {
+@keyframes melon-leg-r {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(-5deg); }
     12.5% { transform: rotate(0deg); }
@@ -409,13 +402,12 @@ nav a.active {
     100% { transform: rotate(0deg); }
 }
 
-/* Forearm: dance then wave bend */
-.tangerine-left-forearm {
-    transform-origin: 5px 20px;
-    animation: forearm-l 4s ease-in-out infinite;
+.melon-left-forearm {
+    transform-origin: 5px 21px;
+    animation: melon-forearm-l 4s ease-in-out infinite;
 }
 
-@keyframes forearm-l {
+@keyframes melon-forearm-l {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(15deg); }
     12.5% { transform: rotate(0deg); }
@@ -425,7 +417,6 @@ nav a.active {
     37.5% { transform: rotate(0deg); }
     43.75% { transform: rotate(-15deg); }
     50% { transform: rotate(-20deg); }
-    /* Wave forearm flick */
     58% { transform: rotate(15deg); }
     66% { transform: rotate(-20deg); }
     74% { transform: rotate(15deg); }
@@ -434,12 +425,12 @@ nav a.active {
     100% { transform: rotate(0deg); }
 }
 
-.tangerine-right-forearm {
-    transform-origin: 39px 20px;
-    animation: forearm-r 4s ease-in-out infinite;
+.melon-right-forearm {
+    transform-origin: 45px 21px;
+    animation: melon-forearm-r 4s ease-in-out infinite;
 }
 
-@keyframes forearm-r {
+@keyframes melon-forearm-r {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(15deg); }
     12.5% { transform: rotate(0deg); }
@@ -452,13 +443,12 @@ nav a.active {
     100% { transform: rotate(0deg); }
 }
 
-/* Shins: dance then stand */
-.tangerine-left-shin {
-    transform-origin: 15px 42px;
-    animation: shin-l 4s ease-in-out infinite;
+.melon-left-shin {
+    transform-origin: 16px 48px;
+    animation: melon-shin-l 4s ease-in-out infinite;
 }
 
-@keyframes shin-l {
+@keyframes melon-shin-l {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(30deg); }
     12.5% { transform: rotate(0deg); }
@@ -471,12 +461,12 @@ nav a.active {
     100% { transform: rotate(0deg); }
 }
 
-.tangerine-right-shin {
-    transform-origin: 29px 42px;
-    animation: shin-r 4s ease-in-out infinite;
+.melon-right-shin {
+    transform-origin: 34px 48px;
+    animation: melon-shin-r 4s ease-in-out infinite;
 }
 
-@keyframes shin-r {
+@keyframes melon-shin-r {
     0% { transform: rotate(0deg); }
     6.25% { transform: rotate(5deg); }
     12.5% { transform: rotate(0deg); }
@@ -489,13 +479,12 @@ nav a.active {
     100% { transform: rotate(0deg); }
 }
 
-/* Leaf wiggles throughout */
-.tangerine-leaf {
-    transform-origin: 22px 7px;
-    animation: tangerine-leaf-wiggle 2s ease-in-out infinite;
+.melon-tendril {
+    transform-origin: 25px 8px;
+    animation: melon-tendril-wiggle 2s ease-in-out infinite;
 }
 
-@keyframes tangerine-leaf-wiggle {
+@keyframes melon-tendril-wiggle {
     0%, 100% { transform: rotate(0deg); }
     25% { transform: rotate(10deg); }
     75% { transform: rotate(-10deg); }
@@ -602,11 +591,10 @@ h3.text-muted {
 }
 
 .paper-title {
-    font-size: 1.05rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 500;
     margin-bottom: 4px;
     color: var(--text);
-    letter-spacing: -0.3px;
     margin-top: 0;
 }
 
