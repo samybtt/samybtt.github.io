@@ -310,6 +310,23 @@ nav a.active {
     100% { transform: translateX(0) translateY(0) rotate(0deg); }
 }
 
+/* Dark mode: white limbs */
+[data-theme="dark"] .tangerine-wave-arm line,
+[data-theme="dark"] .tangerine-right-arm line,
+[data-theme="dark"] .tangerine-left-leg line,
+[data-theme="dark"] .tangerine-right-leg line,
+[data-theme="dark"] .tangerine-left-leg path,
+[data-theme="dark"] .tangerine-right-leg path,
+[data-theme="dark"] .tangerine-left-forearm line,
+[data-theme="dark"] .tangerine-right-forearm line {
+    stroke: #e4e4e7;
+}
+
+[data-theme="dark"] .tangerine-left-forearm circle,
+[data-theme="dark"] .tangerine-right-forearm circle {
+    fill: #e4e4e7;
+}
+
 /* Left arm: dance then wave */
 .tangerine-wave-arm {
     transform-origin: 11px 24px;
