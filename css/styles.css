@@ -4,11 +4,11 @@
     --background: #f9f8f4;
     --text: #1a1a1a;
     --text-secondary: #555;
-    --accent-b: #0010a0;
-    --accent-g: #368768;
-    --header-bg: rgba(207, 227, 247, 0.7);
-    --about-bg: #9dd1ffea;
-    --card-bg: rgba(255, 255, 255, 0.5);
+    --accent-b: #ff6b35;
+    --accent-g: #7b2ff7;
+    --header-bg: rgba(249, 248, 244, 0.95);
+    --about-bg: transparent;
+    --card-bg: rgba(255, 255, 255, 0.75);
     --border: rgba(0, 0, 0, 0.08);
     --shadow: rgba(0, 0, 0, 0.1);
     --shadow-strong: rgba(0, 0, 0, 0.2);
@@ -18,10 +18,10 @@
     --background: #0f1117;
     --text: #e4e4e7;
     --text-secondary: #a1a1aa;
-    --accent-b: #6b8aff;
-    --accent-g: #4ade80;
-    --header-bg: rgba(15, 17, 23, 0.85);
-    --about-bg: rgba(30, 40, 70, 0.9);
+    --accent-b: #ff8c5a;
+    --accent-g: #a06aff;
+    --header-bg: rgba(15, 17, 23, 0.95);
+    --about-bg: transparent;
     --card-bg: rgba(255, 255, 255, 0.05);
     --border: rgba(255, 255, 255, 0.08);
     --shadow: rgba(0, 0, 0, 0.3);
@@ -36,20 +36,30 @@ html {
 
 body {
     margin: 0;
-    padding: 10px;
+    padding-top: 60px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
     font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: var(--background);
     color: var(--text);
-    transition: background 0.3s ease, color 0.3s ease;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 h1, h2, h3, h4 {
     font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
 }
 
+h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: var(--accent-b);
+}
+
 a {
     color: var(--accent-b);
-    transition: color 0.2s ease;
+    transition: color 0.15s ease;
 }
 
 a:hover {
@@ -64,14 +74,12 @@ header {
     left: 0;
     width: 100%;
     background: var(--header-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     display: flex;
     justify-content: center;
     padding: 15px 0;
     z-index: 1000;
-    box-shadow: 0 1px 8px var(--shadow);
-    transition: background 0.3s ease;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s ease;
 }
 
 nav {
@@ -88,7 +96,7 @@ nav a {
     font-weight: 500;
     font-size: 0.95rem;
     padding: 4px 0;
-    transition: color 0.2s ease;
+    transition: color 0.15s ease;
 }
 
 nav a::after {
@@ -99,7 +107,7 @@ nav a::after {
     width: 0;
     height: 2px;
     background: var(--accent-b);
-    transition: width 0.3s ease;
+    transition: width 0.15s ease;
     border-radius: 1px;
 }
 
@@ -125,21 +133,21 @@ nav a.active {
     padding: 6px 10px;
     border-radius: 8px;
     margin-left: 12px;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 #theme-toggle:hover {
     border-color: var(--accent-b);
     color: var(--accent-b);
-    transform: scale(1.05);
 }
 
 /* ====== SECTIONS ====== */
 
 .section {
-    padding: 10px 20px;
-    max-width: 900px;
+    padding: 16px 40px;
+    max-width: 930px;
     margin: auto;
+    scroll-margin-top: 60px;
 }
 
 /* ====== FADE IN ANIMATION ====== */
@@ -155,6 +163,62 @@ nav a.active {
     transform: translateY(0);
 }
 
+/* ====== SPROUTS ====== */
+
+.about-decorated {
+    position: relative;
+}
+
+.sprout-container {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.sprout-container.top {
+    top: 0;
+}
+
+.sprout {
+    position: absolute;
+    transform-origin: bottom center;
+    animation: sprout-grow 1.2s ease-out both;
+}
+
+.sprout.top-sprout {
+    transform-origin: top center;
+}
+
+.sprout.bottom-sprout {
+    transform-origin: bottom center;
+}
+
+.sprout svg {
+    animation: sprout-sway 3s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+.sprout.top-sprout svg {
+    transform-origin: top center;
+}
+
+.sprout.bottom-sprout svg {
+    transform-origin: bottom center;
+}
+
+@keyframes sprout-grow {
+    from { transform: scaleY(0); opacity: 0; }
+    to { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes sprout-sway {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    75% { transform: rotate(-5deg); }
+}
+
 /* ====== ABOUT ====== */
 
 #about {
@@ -163,16 +227,13 @@ nav a.active {
     justify-content: space-around;
     flex-wrap: wrap;
     text-align: left;
-    background: var(--about-bg);
-    border-radius: 16px;
-    padding: 40px;
-    box-shadow: 0 6px 20px var(--shadow-strong);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    padding: 40px 40px;
+    border-bottom: 1px solid var(--border);
 }
 
 .about-image {
     text-align: center;
-    margin: 30px;
+    margin: 20px;
 }
 
 .about-image img {
@@ -180,13 +241,7 @@ nav a.active {
     height: 200px;
     object-fit: cover;
     border-radius: 100px;
-    box-shadow: 0 4px 16px var(--shadow-strong);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.about-image img:hover {
-    transform: scale(1.05) rotate(2deg);
-    box-shadow: 0 8px 28px var(--shadow-strong);
+    box-shadow: 0 2px 8px var(--shadow);
 }
 
 .about-image h1 {
@@ -203,18 +258,17 @@ nav a.active {
     margin: 0 8px;
     font-size: 20px;
     color: var(--text);
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: color 0.15s ease;
 }
 
 .social-icons a:hover {
     color: var(--accent-b);
-    transform: translateY(-2px);
 }
 
 .description {
     flex: 1;
     min-width: 280px;
-    margin: 20px;
+    margin: 16px;
     text-align: left;
 }
 
@@ -229,10 +283,205 @@ nav a.active {
     letter-spacing: -0.5px;
     line-height: 1.2;
     margin-bottom: 16px;
-    background: linear-gradient(135deg, var(--accent-b), var(--accent-g));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--accent-b);
+}
+
+/* ====== DANCING TANGERINE ====== */
+
+.dancing-tangerine {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    animation: tangerine-groove 4s ease-in-out infinite;
+}
+
+@keyframes tangerine-groove {
+    /* Dance phase: 0-50% */
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    6.25% { transform: translateX(-3px) translateY(-4px) rotate(-5deg); }
+    12.5% { transform: translateX(0) translateY(0) rotate(0deg); }
+    18.75% { transform: translateX(3px) translateY(-4px) rotate(5deg); }
+    25% { transform: translateX(0) translateY(0) rotate(0deg); }
+    31.25% { transform: translateX(-3px) translateY(-4px) rotate(-5deg); }
+    37.5% { transform: translateX(0) translateY(0) rotate(0deg); }
+    43.75% { transform: translateX(3px) translateY(-4px) rotate(5deg); }
+    50% { transform: translateX(0) translateY(0) rotate(0deg); }
+    /* Wave phase: 50-100% (still) */
+    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+}
+
+/* Left arm: dance then wave */
+.tangerine-wave-arm {
+    transform-origin: 11px 24px;
+    animation: tangerine-arm-l 4s ease-in-out infinite;
+}
+
+@keyframes tangerine-arm-l {
+    /* Dance */
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(20deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(-20deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(20deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(-20deg); }
+    50% { transform: rotate(-80deg); }
+    /* Wave - arm raised high */
+    58% { transform: rotate(50deg); }
+    66% { transform: rotate(-80deg); }
+    74% { transform: rotate(50deg); }
+    82% { transform: rotate(-80deg); }
+    90% { transform: rotate(50deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Right arm: dance then still */
+.tangerine-right-arm {
+    transform-origin: 33px 24px;
+    animation: tangerine-arm-r 4s ease-in-out infinite;
+}
+
+@keyframes tangerine-arm-r {
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(20deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(-20deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(20deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(-20deg); }
+    50% { transform: rotate(95deg); }
+    100% { transform: rotate(95deg); }
+}
+
+/* Legs: dance then stand */
+.tangerine-left-leg {
+    transform-origin: 17px 35px;
+    animation: tangerine-leg-l 4s ease-in-out infinite;
+}
+
+.tangerine-right-leg {
+    transform-origin: 27px 35px;
+    animation: tangerine-leg-r 4s ease-in-out infinite;
+}
+
+@keyframes tangerine-leg-l {
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(-20deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(5deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(-20deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(5deg); }
+    50% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes tangerine-leg-r {
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(-5deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(20deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(-5deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(20deg); }
+    50% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Forearm: dance then wave bend */
+.tangerine-left-forearm {
+    transform-origin: 5px 20px;
+    animation: forearm-l 4s ease-in-out infinite;
+}
+
+@keyframes forearm-l {
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(15deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(-15deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(15deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(-15deg); }
+    50% { transform: rotate(-20deg); }
+    /* Wave forearm flick */
+    58% { transform: rotate(15deg); }
+    66% { transform: rotate(-20deg); }
+    74% { transform: rotate(15deg); }
+    82% { transform: rotate(-20deg); }
+    90% { transform: rotate(15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.tangerine-right-forearm {
+    transform-origin: 39px 20px;
+    animation: forearm-r 4s ease-in-out infinite;
+}
+
+@keyframes forearm-r {
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(15deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(-15deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(15deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(-15deg); }
+    50% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Shins: dance then stand */
+.tangerine-left-shin {
+    transform-origin: 15px 42px;
+    animation: shin-l 4s ease-in-out infinite;
+}
+
+@keyframes shin-l {
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(30deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(-5deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(30deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(-5deg); }
+    50% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.tangerine-right-shin {
+    transform-origin: 29px 42px;
+    animation: shin-r 4s ease-in-out infinite;
+}
+
+@keyframes shin-r {
+    0% { transform: rotate(0deg); }
+    6.25% { transform: rotate(5deg); }
+    12.5% { transform: rotate(0deg); }
+    18.75% { transform: rotate(-30deg); }
+    25% { transform: rotate(0deg); }
+    31.25% { transform: rotate(5deg); }
+    37.5% { transform: rotate(0deg); }
+    43.75% { transform: rotate(-30deg); }
+    50% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Leaf wiggles throughout */
+.tangerine-leaf {
+    transform-origin: 22px 7px;
+    animation: tangerine-leaf-wiggle 2s ease-in-out infinite;
+}
+
+@keyframes tangerine-leaf-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    75% { transform: rotate(-10deg); }
 }
 
 /* ====== TIMELINE ====== */
@@ -252,16 +501,16 @@ nav a.active {
     height: 65%;
     width: 2px;
     background: var(--accent-b);
-    transition: background 0.3s ease;
+    transition: background 0.15s ease;
 }
 
 .timeline-entry {
     position: relative;
     display: flex;
     align-items: flex-start;
-    margin: 40px 0 40px 60px;
+    margin: 30px 0 30px 60px;
     text-align: left;
-    transition: transform 0.3s ease;
+    transition: transform 0.15s ease;
 }
 
 .timeline-entry:hover {
@@ -271,19 +520,17 @@ nav a.active {
 .timeline-entry::before {
     content: '';
     position: absolute;
-    left: -30px;
-    top: 16px;
-    width: 16px;
-    height: 16px;
+    left: -26px;
+    top: 18px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--accent-b);
-    box-shadow: 0 4px 12px var(--shadow-strong);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: background 0.15s ease;
 }
 
 .timeline-entry:hover::before {
-    transform: scale(1.3);
-    box-shadow: 0 0 12px var(--accent-b);
+    background: var(--accent-g);
 }
 
 .timeline-entry img {
@@ -322,14 +569,14 @@ h3.text-muted {
 }
 
 .paper-entry {
-    padding: 12px 8px;
+    padding: 14px 12px;
     border-bottom: 1px solid var(--border);
     margin-top: 0;
     margin-bottom: 0;
     border-radius: 6px;
     background: transparent;
     border-left: 3px solid transparent;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .paper-entry:hover {
@@ -369,7 +616,7 @@ h3.text-muted {
     color: var(--accent-b);
     font-weight: 500;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.15s ease;
 }
 
 .paper-links a:hover {
@@ -417,7 +664,7 @@ h3.text-muted {
     border: 1px solid var(--border);
     padding: 16px 28px;
     border-radius: 12px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .contact-card:hover {
@@ -447,7 +694,7 @@ h3.text-muted {
     padding: 6px 10px;
     border-radius: 6px;
     font-size: 0.9rem;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 }
 
 .copy-email:hover {
@@ -483,28 +730,33 @@ footer {
         font-size: 0.85rem;
     }
 
+    .section {
+        padding: 12px 16px;
+    }
+
     #about {
         padding: 24px 16px;
         flex-direction: column;
         text-align: center;
     }
 
-    .description {
-        text-align: center;
-        min-width: unset;
-    }
-
-    .hero-tagline {
-        font-size: 1.4rem;
-    }
-
     .about-image {
-        margin: 15px;
+        margin: 12px;
     }
 
     .about-image img {
-        width: 150px;
-        height: 150px;
+        width: 140px;
+        height: 140px;
+    }
+
+    .description {
+        text-align: center;
+        min-width: unset;
+        margin: 10px;
+    }
+
+    .hero-tagline {
+        font-size: 1.3rem;
     }
 
     #experience::before {
@@ -512,17 +764,23 @@ footer {
     }
 
     .timeline-entry {
-        margin-left: 40px;
+        margin: 20px 0 20px 40px;
     }
 
     .timeline-entry::before {
-        left: -20px;
-        width: 12px;
-        height: 12px;
+        left: -18px;
+        width: 6px;
+        height: 6px;
+    }
+
+    .timeline-entry img {
+        width: 44px;
+        height: 44px;
+        margin-right: 16px;
     }
 
     .paper-entry {
-        padding: 14px;
+        padding: 12px 10px;
     }
 
     .contact-card {
