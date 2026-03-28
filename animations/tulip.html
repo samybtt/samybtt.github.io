@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tulip Growth Animation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #FFF8F0; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function () {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  // Colors
+  const BG        = '#FFF8F0';
+  const STEM_CLR  = '#7BA05B';
+  const LEAF_CLR  = '#7BA05B';
+  const LEAF_DARK = '#5E8A3F';
+  const PETAL_OUT = '#E8A0BF';
+  const PETAL_IN  = '#F0C0D0';
+  const SEED_CLR  = '#8B6F4E';
+  const SOIL_CLR  = '#C4A97D';
+
+  // Timing (seconds)
+  const T_SEED_START   = 0.0;
+  const T_SEED_END     = 0.8;
+  const T_STEM_START   = 0.6;
+  const T_STEM_END     = 3.2;
+  const T_LEAF_START   = 2.0;
+  const T_LEAF_END     = 4.5;
+  const T_BUD_START    = 3.5;
+  const T_BUD_END      = 5.0;
+  const T_BLOOM_START  = 4.8;
+  const T_BLOOM_END    = 7.0;
+  const T_HOLD         = 2.0;
+  const T_FADE_DUR     = 1.5;
+  const T_TOTAL        = T_BLOOM_END + T_HOLD + T_FADE_DUR + 0.5;
+
+  let startTime = null;
+  let w, h, cx, baseY, scale;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    w = canvas.clientWidth;
+    h = canvas.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = w / 2;
+    baseY = h * 0.82;
+    scale = Math.min(w, h) / 700;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Easing: cubic ease-in-out
+  function ease(t) {
+    t = Math.max(0, Math.min(1, t));
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  // Progress helper
+  function progress(time, start, end) {
+    if (time < start) return 0;
+    if (time > end) return 1;
+    return (time - start) / (end - start);
+  }
+
+  // Lerp
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  // Draw soil mound
+  function drawSoil(alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = SOIL_CLR;
+    ctx.beginPath();
+    ctx.ellipse(cx, baseY + 6 * scale, 40 * scale, 12 * scale, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Draw seed / sprout dot
+  function drawSeed(p, alpha) {
+    const sz = lerp(3, 6, p) * scale;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = SEED_CLR;
+    ctx.beginPath();
+    ctx.ellipse(cx, baseY - sz * 0.5, sz, sz * 0.7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // tiny green tip
+    if (p > 0.4) {
+      const tipP = ease((p - 0.4) / 0.6);
+      const tipH = tipP * 12 * scale;
+      ctx.fillStyle = STEM_CLR;
+      ctx.beginPath();
+      ctx.moveTo(cx - 2 * scale, baseY - sz * 0.5);
+      ctx.quadraticCurveTo(cx, baseY - sz * 0.5 - tipH, cx + 2 * scale, baseY - sz * 0.5);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Draw stem
+  function drawStem(p, alpha) {
+    if (p <= 0) return;
+    const stemH = 260 * scale;
+    const currentH = stemH * p;
+    const topY = baseY - currentH;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = STEM_CLR;
+    ctx.lineWidth = 4 * scale;
+    ctx.lineCap = 'round';
+
+    // Slight S-curve for organic feel
+    const cp1x = cx + 6 * scale;
+    const cp1y = baseY - currentH * 0.33;
+    const cp2x = cx - 4 * scale;
+    const cp2y = baseY - currentH * 0.66;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, baseY);
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, cx, topY);
+    ctx.stroke();
+    ctx.restore();
+
+    return { topY, currentH };
+  }
+
+  // Get point on stem at fraction f (0=base, 1=top)
+  function stemPoint(f, stemH) {
+    const currentH = stemH;
+    const topY = baseY - currentH;
+    const cp1x = cx + 6 * scale;
+    const cp1y = baseY - currentH * 0.33;
+    const cp2x = cx - 4 * scale;
+    const cp2y = baseY - currentH * 0.66;
+
+    // Cubic bezier evaluation
+    const t = f;
+    const mt = 1 - t;
+    const x = mt*mt*mt*cx + 3*mt*mt*t*cp1x + 3*mt*t*t*cp2x + t*t*t*cx;
+    const y = mt*mt*mt*baseY + 3*mt*mt*t*cp1y + 3*mt*t*t*cp2y + t*t*t*topY;
+    return { x, y };
+  }
+
+  // Draw a single leaf
+  function drawLeaf(stemFrac, side, openP, stemH, alpha) {
+    if (openP <= 0) return;
+    const attach = stemPoint(stemFrac, stemH);
+    const dir = side === 'left' ? -1 : 1;
+    const leafLen = 55 * scale * openP;
+    const leafW = 22 * scale * openP;
+    const angle = dir * lerp(0.15, 0.65, openP);
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(attach.x, attach.y);
+    ctx.rotate(angle);
+
+    // Leaf shape via bezier
+    ctx.fillStyle = LEAF_CLR;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(
+      dir * leafW * 0.6, -leafLen * 0.3,
+      dir * leafW, -leafLen * 0.65,
+      0, -leafLen
+    );
+    ctx.bezierCurveTo(
+      -dir * leafW * 0.3, -leafLen * 0.65,
+      -dir * leafW * 0.15, -leafLen * 0.3,
+      0, 0
+    );
+    ctx.fill();
+
+    // Center vein
+    ctx.strokeStyle = LEAF_DARK;
+    ctx.lineWidth = 1.2 * scale;
+    ctx.globalAlpha = alpha * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(dir * leafW * 0.15, -leafLen * 0.5, 0, -leafLen);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  // Draw tulip bud and bloom
+  function drawTulip(budP, bloomP, stemH, alpha) {
+    if (budP <= 0) return;
+    const top = stemPoint(1, stemH);
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(top.x, top.y);
+
+    const budH = lerp(12, 28, budP) * scale;
+    const budW = lerp(8, 16, budP) * scale;
+    const bloomOpen = bloomP;
+
+    // Draw petals (5 petals)
+    const petalCount = 5;
+    for (let i = 0; i < petalCount; i++) {
+      const angle = (i / petalCount) * Math.PI - Math.PI / 2;
+      const spread = bloomOpen * 0.55;
+      const petalAngle = angle * (1 + spread);
+      const isInner = i % 2 === 0;
+
+      ctx.save();
+      ctx.rotate(petalAngle * 0.3);
+
+      const offsetX = Math.sin(petalAngle) * spread * budW * 1.8;
+      const petalH = budH * lerp(1, 1.4, bloomOpen);
+      const petalW = budW * lerp(0.7, 1.15, bloomOpen);
+      const tipY = -petalH;
+
+      ctx.fillStyle = isInner ? PETAL_IN : PETAL_OUT;
+      ctx.beginPath();
+      ctx.moveTo(offsetX, 0);
+      ctx.bezierCurveTo(
+        offsetX - petalW * 1.1, tipY * 0.35,
+        offsetX - petalW * 0.8, tipY * 0.75,
+        offsetX, tipY
+      );
+      ctx.bezierCurveTo(
+        offsetX + petalW * 0.8, tipY * 0.75,
+        offsetX + petalW * 1.1, tipY * 0.35,
+        offsetX, 0
+      );
+      ctx.fill();
+
+      // Highlight stroke on outer petals
+      if (!isInner && bloomOpen > 0.3) {
+        ctx.strokeStyle = PETAL_IN;
+        ctx.lineWidth = 1 * scale;
+        ctx.globalAlpha = alpha * 0.4 * bloomOpen;
+        ctx.beginPath();
+        ctx.moveTo(offsetX, -petalH * 0.2);
+        ctx.quadraticCurveTo(offsetX + petalW * 0.15, tipY * 0.6, offsetX, tipY * 0.92);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    // Calyx (green base where petals meet stem)
+    ctx.fillStyle = STEM_CLR;
+    ctx.beginPath();
+    ctx.ellipse(0, 2 * scale, budW * 0.6, 6 * scale, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function draw(time) {
+    // Clear
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, w, h);
+
+    // Compute global alpha for fade out/in loop
+    let globalAlpha = 1;
+    if (time > T_BLOOM_END + T_HOLD) {
+      const fadeT = (time - T_BLOOM_END - T_HOLD) / T_FADE_DUR;
+      globalAlpha = Math.max(0, 1 - ease(Math.min(1, fadeT)));
+    }
+
+    const seedP   = ease(progress(time, T_SEED_START, T_SEED_END));
+    const stemP   = ease(progress(time, T_STEM_START, T_STEM_END));
+    const leafP   = ease(progress(time, T_LEAF_START, T_LEAF_END));
+    const budP    = ease(progress(time, T_BUD_START, T_BUD_END));
+    const bloomP  = ease(progress(time, T_BLOOM_START, T_BLOOM_END));
+
+    const stemH = 260 * scale * stemP;
+
+    // Soil
+    drawSoil(globalAlpha);
+
+    // Seed
+    if (seedP > 0 && stemP < 0.15) {
+      drawSeed(seedP, globalAlpha);
+    }
+
+    // Stem
+    if (stemP > 0) {
+      drawStem(stemP, globalAlpha);
+    }
+
+    // Leaves (two leaves at different heights)
+    if (leafP > 0 && stemP > 0.3) {
+      const leafOpen1 = ease(Math.min(1, leafP * 1.3));
+      const leafOpen2 = ease(Math.max(0, (leafP - 0.2) / 0.8));
+      drawLeaf(0.35, 'left', leafOpen1, stemH, globalAlpha);
+      drawLeaf(0.55, 'right', leafOpen2, stemH, globalAlpha);
+    }
+
+    // Tulip
+    if (budP > 0 && stemP > 0.85) {
+      drawTulip(budP, bloomP, stemH, globalAlpha);
+    }
+  }
+
+  function loop(timestamp) {
+    if (startTime === null) startTime = timestamp;
+    let elapsed = (timestamp - startTime) / 1000;
+
+    // Loop reset
+    if (elapsed > T_TOTAL) {
+      startTime = timestamp;
+      elapsed = 0;
+    }
+
+    draw(elapsed);
+    requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

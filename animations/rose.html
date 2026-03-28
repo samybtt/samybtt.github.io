@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rose Bloom</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #FFF8F0; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  // Colors
+  const BG        = '#FFF8F0';
+  const STEM_CLR  = '#5B8C5A';
+  const THORN_CLR = '#3D6B3A';
+  const LEAF_CLR  = '#5B8C5A';
+  const LEAF_VEIN = '#4A7A49';
+  const PETAL_OUT = '#D46B8A';
+  const PETAL_MID = '#E8899E';
+  const PETAL_IN  = '#F0A0B0';
+  const SEPAL_CLR = '#4A7A49';
+
+  // Timing (seconds)
+  const SPROUT_START  = 0;
+  const SPROUT_END    = 1.0;
+  const STEM_START    = 0.6;
+  const STEM_END      = 3.5;
+  const LEAF_START    = 2.0;
+  const LEAF_END      = 5.5;
+  const BUD_START     = 4.0;
+  const BUD_END       = 5.0;
+  const BLOOM_START   = 5.0;
+  const BLOOM_END     = 8.0;
+  const HOLD_DURATION = 2.0;
+  const FADE_DURATION = 1.5;
+  const TOTAL_CYCLE   = BLOOM_END + HOLD_DURATION + FADE_DURATION;
+
+  let W, H, cx, baseY;
+  let startTime = null;
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = canvas.width  = canvas.clientWidth  * dpr;
+    H = canvas.height = canvas.clientHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = canvas.clientWidth / 2;
+    baseY = canvas.clientHeight * 0.88;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Easing: cubic ease-in-out
+  function ease(t) {
+    t = Math.max(0, Math.min(1, t));
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  // Map time to [0,1] progress within a phase
+  function phase(time, start, end) {
+    if (time < start) return 0;
+    if (time > end) return 1;
+    return ease((time - start) / (end - start));
+  }
+
+  // Stem path: slight S-curve from base upward
+  const stemHeight = () => baseY * 0.62;
+
+  function stemPoint(t) {
+    // t in [0,1] along the stem, 0 = base, 1 = top
+    const h = stemHeight();
+    const y = baseY - t * h;
+    const x = cx + Math.sin(t * Math.PI * 1.1) * 18 - 4;
+    return { x, y };
+  }
+
+  function stemTangent(t) {
+    const dt = 0.001;
+    const a = stemPoint(Math.max(0, t - dt));
+    const b = stemPoint(Math.min(1, t + dt));
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    return { dx: dx / len, dy: dy / len };
+  }
+
+  // Draw stem
+  function drawStem(progress) {
+    if (progress <= 0) return;
+    const steps = Math.floor(progress * 80);
+    ctx.strokeStyle = STEM_CLR;
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) {
+      const t = i / 80;
+      const p = stemPoint(t);
+      if (i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+
+  // Draw thorns along stem
+  function drawThorns(progress) {
+    if (progress <= 0) return;
+    const thornPositions = [0.15, 0.28, 0.42, 0.55, 0.68, 0.78];
+    ctx.fillStyle = THORN_CLR;
+    for (const tp of thornPositions) {
+      if (tp > progress) continue;
+      const localP = phase(progress, tp, tp + 0.08);
+      if (localP <= 0) continue;
+      const p = stemPoint(tp);
+      const tang = stemTangent(tp);
+      // perpendicular
+      const side = (thornPositions.indexOf(tp) % 2 === 0) ? 1 : -1;
+      const px = -tang.dy * side;
+      const py = tang.dx * side;
+      const size = 6 * localP;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + px * size + tang.dx * size * 0.5, p.y + py * size + tang.dy * size * 0.5);
+      ctx.lineTo(p.x + tang.dx * size * 0.3, p.y + tang.dy * size * 0.3);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
+  // Draw a single leaflet (teardrop via bezier)
+  function drawLeaflet(ox, oy, angle, size, flip) {
+    ctx.save();
+    ctx.translate(ox, oy);
+    ctx.rotate(angle);
+    if (flip) ctx.scale(-1, 1);
+
+    const w = size * 0.45;
+    const h = size;
+
+    // Leaf body
+    ctx.fillStyle = LEAF_CLR;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(w * 0.8, -h * 0.25, w, -h * 0.7, 0, -h);
+    ctx.bezierCurveTo(-w, -h * 0.7, -w * 0.8, -h * 0.25, 0, 0);
+    ctx.fill();
+
+    // Central vein
+    ctx.strokeStyle = LEAF_VEIN;
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -1);
+    ctx.lineTo(0, -h * 0.9);
+    ctx.stroke();
+
+    // Side veins
+    ctx.lineWidth = 0.5;
+    for (let i = 1; i <= 3; i++) {
+      const vy = -h * (0.2 + i * 0.18);
+      const vx = w * (0.5 - i * 0.08);
+      ctx.beginPath();
+      ctx.moveTo(0, vy);
+      ctx.lineTo(vx, vy - h * 0.08);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, vy);
+      ctx.lineTo(-vx, vy - h * 0.08);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  // Compound leaf group
+  function drawLeafGroup(ox, oy, baseAngle, size, progress) {
+    if (progress <= 0) return;
+    const s = size * progress;
+    const count = 5;
+    // Central leaflet
+    drawLeaflet(ox, oy, baseAngle, s * 1.1, false);
+    // Side leaflets
+    for (let i = 1; i <= 2; i++) {
+      const offset = i * s * 0.55;
+      const subSize = s * (1 - i * 0.15);
+      const spreadAngle = i * 0.35;
+      // Along the petiole direction
+      const pdx = Math.cos(baseAngle - Math.PI / 2) * offset;
+      const pdy = Math.sin(baseAngle - Math.PI / 2) * offset;
+      drawLeaflet(ox + pdx, oy + pdy, baseAngle - spreadAngle, subSize, false);
+      drawLeaflet(ox + pdx, oy + pdy, baseAngle + spreadAngle, subSize, true);
+    }
+  }
+
+  // Leaf positions along stem
+  const leafDefs = [
+    { stemT: 0.30, side: -1, angle: -0.8, size: 28, delay: 0 },
+    { stemT: 0.45, side:  1, angle:  0.7, size: 32, delay: 0.15 },
+    { stemT: 0.58, side: -1, angle: -0.6, size: 26, delay: 0.3 },
+    { stemT: 0.72, side:  1, angle:  0.5, size: 22, delay: 0.45 },
+  ];
+
+  function drawLeaves(stemProg, leafProg) {
+    for (const ld of leafDefs) {
+      if (ld.stemT > stemProg) continue;
+      const lp = phase(leafProg, ld.delay, ld.delay + 0.5);
+      if (lp <= 0) continue;
+      const sp = stemPoint(ld.stemT);
+      const tang = stemTangent(ld.stemT);
+      const perpX = -tang.dy * ld.side;
+      const perpY = tang.dx * ld.side;
+      const ox = sp.x + perpX * 6;
+      const oy = sp.y + perpY * 6;
+      const angle = Math.atan2(perpY, perpX) + ld.angle;
+      drawLeafGroup(ox, oy, angle, ld.size, lp);
+    }
+  }
+
+  // Draw sprout (two small leaves at base)
+  function drawSprout(progress) {
+    if (progress <= 0) return;
+    const s = progress;
+    const x = cx;
+    const y = baseY;
+
+    ctx.fillStyle = STEM_CLR;
+    // Left cotyledon
+    ctx.save();
+    ctx.translate(x - 2, y - 4 * s);
+    ctx.rotate(-0.5 * s);
+    ctx.beginPath();
+    ctx.ellipse(0, -8 * s, 4 * s, 10 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Right cotyledon
+    ctx.save();
+    ctx.translate(x + 2, y - 4 * s);
+    ctx.rotate(0.5 * s);
+    ctx.beginPath();
+    ctx.ellipse(0, -8 * s, 4 * s, 10 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Draw sepals at top of stem
+  function drawSepals(budProg) {
+    if (budProg <= 0) return;
+    const top = stemPoint(1);
+    const count = 5;
+    ctx.fillStyle = SEPAL_CLR;
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * Math.PI * 2 - Math.PI / 2;
+      const spread = budProg * 0.4;
+      ctx.save();
+      ctx.translate(top.x, top.y);
+      ctx.rotate(a);
+      const len = 14 * budProg;
+      const w = 5 * budProg;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(w, -len * 0.3, w * 0.8, -len * 0.7, 0, -len);
+      ctx.bezierCurveTo(-w * 0.8, -len * 0.7, -w, -len * 0.3, 0, 0);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // Draw the rose bloom
+  function drawBloom(bloomProg) {
+    if (bloomProg <= 0) return;
+    const top = stemPoint(1);
+    const bx = top.x;
+    const by = top.y;
+
+    // Petal layers: outer, middle, inner
+    const layers = [
+      { color: PETAL_OUT, count: 8, radius: 28, petalW: 18, petalH: 30, startT: 0, endT: 0.45, rotOff: 0 },
+      { color: PETAL_MID, count: 7, radius: 18, petalW: 14, petalH: 24, startT: 0.2, endT: 0.65, rotOff: 0.3 },
+      { color: PETAL_IN,  count: 6, radius: 10, petalW: 10, petalH: 18, startT: 0.4, endT: 0.85, rotOff: 0.6 },
+      { color: '#F5B5C5', count: 5, radius: 5,  petalW: 7,  petalH: 13, startT: 0.6, endT: 1.0, rotOff: 0.9 },
+    ];
+
+    for (const layer of layers) {
+      const lp = phase(bloomProg, layer.startT, layer.endT);
+      if (lp <= 0) continue;
+
+      ctx.fillStyle = layer.color;
+      const openAngle = lp * Math.PI * 0.55; // how much petals open outward
+
+      for (let i = 0; i < layer.count; i++) {
+        const baseAngle = (i / layer.count) * Math.PI * 2 + layer.rotOff;
+        const r = layer.radius * lp;
+        const px = bx + Math.cos(baseAngle) * r;
+        const py = by + Math.sin(baseAngle) * r;
+
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(baseAngle + Math.PI / 2);
+
+        const w = layer.petalW * lp;
+        const h = layer.petalH * lp;
+
+        // Cupped petal shape using bezier curves
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(
+          w * 0.9, -h * 0.15,
+          w * 1.1, -h * 0.6,
+          w * 0.3, -h
+        );
+        ctx.bezierCurveTo(
+          0, -h * 1.08,
+          0, -h * 1.08,
+          -w * 0.3, -h
+        );
+        ctx.bezierCurveTo(
+          -w * 1.1, -h * 0.6,
+          -w * 0.9, -h * 0.15,
+          0, 0
+        );
+        ctx.fill();
+
+        // Subtle highlight on each petal
+        ctx.globalAlpha = 0.15;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.moveTo(0, -h * 0.2);
+        ctx.bezierCurveTo(w * 0.4, -h * 0.4, w * 0.3, -h * 0.7, 0, -h * 0.85);
+        ctx.bezierCurveTo(-w * 0.3, -h * 0.7, -w * 0.4, -h * 0.4, 0, -h * 0.2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = layer.color;
+
+        ctx.restore();
+      }
+    }
+
+    // Center of the rose
+    const centerP = phase(bloomProg, 0.7, 1.0);
+    if (centerP > 0) {
+      const grad = ctx.createRadialGradient(bx, by, 0, bx, by, 8 * centerP);
+      grad.addColorStop(0, '#C45070');
+      grad.addColorStop(0.6, '#D46B8A');
+      grad.addColorStop(1, 'rgba(212,107,138,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(bx, by, 8 * centerP, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tight spiral in center
+      ctx.strokeStyle = '#C45070';
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.5 * centerP;
+      ctx.beginPath();
+      for (let a = 0; a < Math.PI * 4; a += 0.1) {
+        const sr = a * 0.8 * centerP;
+        const sx = bx + Math.cos(a) * sr;
+        const sy = by + Math.sin(a) * sr;
+        if (a === 0) ctx.moveTo(sx, sy);
+        else ctx.lineTo(sx, sy);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // Draw the bud (closed petals before bloom)
+  function drawBud(budProg, bloomProg) {
+    if (budProg <= 0 || bloomProg >= 1) return;
+    const top = stemPoint(1);
+    const closedness = 1 - bloomProg;
+    const s = budProg * closedness;
+    if (s <= 0.01) return;
+
+    ctx.fillStyle = PETAL_OUT;
+    const count = 5;
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * Math.PI * 2 - Math.PI / 2;
+      ctx.save();
+      ctx.translate(top.x, top.y);
+      ctx.rotate(a);
+      const h = 18 * s;
+      const w = 6 * s;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(w, -h * 0.3, w * 0.7, -h * 0.8, 0, -h);
+      ctx.bezierCurveTo(-w * 0.7, -h * 0.8, -w, -h * 0.3, 0, 0);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // Ground line
+  function drawGround() {
+    const gw = 120;
+    ctx.strokeStyle = '#A8C4A0';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - gw, baseY + 2);
+    ctx.bezierCurveTo(cx - gw * 0.5, baseY + 5, cx + gw * 0.5, baseY + 5, cx + gw, baseY + 2);
+    ctx.stroke();
+
+    // Small soil mound
+    ctx.fillStyle = '#D4C4A8';
+    ctx.globalAlpha = 0.3;
+    ctx.beginPath();
+    ctx.ellipse(cx, baseY + 3, 30, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  function draw(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = (timestamp - startTime) / 1000;
+    const cycleTime = elapsed % TOTAL_CYCLE;
+
+    // Fade alpha for the restart transition
+    let globalAlpha = 1;
+    if (cycleTime > BLOOM_END + HOLD_DURATION) {
+      globalAlpha = 1 - (cycleTime - BLOOM_END - HOLD_DURATION) / FADE_DURATION;
+      globalAlpha = Math.max(0, Math.min(1, globalAlpha));
+    }
+
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+
+    // Clear
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, cw, ch);
+
+    ctx.globalAlpha = globalAlpha;
+
+    // Progress values
+    const sproutP = phase(cycleTime, SPROUT_START, SPROUT_END);
+    const stemP   = phase(cycleTime, STEM_START, STEM_END);
+    const leafRaw = (cycleTime - LEAF_START) / (LEAF_END - LEAF_START);
+    const leafP   = Math.max(0, Math.min(1, leafRaw));
+    const budP    = phase(cycleTime, BUD_START, BUD_END);
+    const bloomP  = phase(cycleTime, BLOOM_START, BLOOM_END);
+
+    drawGround();
+    drawSprout(sproutP * (1 - stemP * 0.8));
+    drawStem(stemP);
+    drawThorns(stemP);
+    drawLeaves(stemP, leafP);
+    drawSepals(budP);
+    drawBud(budP, bloomP);
+    drawBloom(bloomP);
+
+    ctx.globalAlpha = 1;
+
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

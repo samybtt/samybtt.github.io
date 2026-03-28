@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wisteria</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #FFF8F0; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(function () {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+
+  let W, H;
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // --- Easing ---
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+  function easeInCubic(t) {
+    return t * t * t;
+  }
+
+  // --- Timing (seconds) ---
+  const PHASE_MAIN_BRANCH = [0, 2.5];
+  const PHASE_SUB_BRANCHES = [1.8, 4.5];
+  const PHASE_LEAVES = [3.5, 6.5];
+  const PHASE_FLOWERS = [5.0, 9.0];
+  const PHASE_HOLD = [9.0, 11.0];
+  const PHASE_FADE = [11.0, 12.5];
+  const TOTAL_CYCLE = 12.5;
+
+  function phaseProgress(time, start, end) {
+    if (time < start) return 0;
+    if (time > end) return 1;
+    return (time - start) / (end - start);
+  }
+
+  // --- Seeded random ---
+  let seed = 12345;
+  function seededRandom() {
+    seed = (seed * 16807 + 0) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  // --- Generate scene geometry (deterministic) ---
+  function generateScene() {
+    seed = 12345;
+
+    const scene = { mainBranch: [], subBranches: [], leaves: [], flowerClusters: [] };
+
+    // Main branch: a bezier curve from left to right with gentle upward arc
+    const mx = W * 0.05;
+    const my = H * 0.35;
+    scene.mainBranch = {
+      x0: mx, y0: my,
+      cx1: W * 0.25, cy1: H * 0.22,
+      cx2: W * 0.55, cy2: H * 0.28,
+      x1: W * 0.92, y1: H * 0.32,
+      thickness: Math.max(6, W * 0.008)
+    };
+
+    // Evaluate point on main branch
+    function mainPt(t) {
+      const b = scene.mainBranch;
+      const u = 1 - t;
+      const x = u*u*u*b.x0 + 3*u*u*t*b.cx1 + 3*u*t*t*b.cx2 + t*t*t*b.x1;
+      const y = u*u*u*b.y0 + 3*u*u*t*b.cy1 + 3*u*t*t*b.cy2 + t*t*t*b.y1;
+      return { x, y };
+    }
+
+    function mainTangent(t) {
+      const b = scene.mainBranch;
+      const u = 1 - t;
+      const dx = 3*u*u*(b.cx1-b.x0) + 6*u*t*(b.cx2-b.cx1) + 3*t*t*(b.x1-b.cx2);
+      const dy = 3*u*u*(b.cy1-b.y0) + 6*u*t*(b.cy2-b.cy1) + 3*t*t*(b.y1-b.cy2);
+      const len = Math.sqrt(dx*dx+dy*dy);
+      return { dx: dx/len, dy: dy/len };
+    }
+
+    // Sub-branches
+    const subCount = 7 + Math.floor(seededRandom() * 4);
+    for (let i = 0; i < subCount; i++) {
+      const t = 0.15 + seededRandom() * 0.75;
+      const pt = mainPt(t);
+      const tang = mainTangent(t);
+      const side = seededRandom() > 0.35 ? 1 : -1; // mostly downward
+      const angle = Math.atan2(tang.dy, tang.dx) + side * (0.3 + seededRandom() * 0.8);
+      const len = W * (0.04 + seededRandom() * 0.08);
+      const cx = pt.x + Math.cos(angle) * len * 0.5 + (seededRandom() - 0.5) * len * 0.3;
+      const cy = pt.y + Math.sin(angle) * len * 0.5 + seededRandom() * len * 0.2;
+      const ex = pt.x + Math.cos(angle) * len;
+      const ey = pt.y + Math.sin(angle) * len;
+
+      scene.subBranches.push({
+        mainT: t,
+        sx: pt.x, sy: pt.y,
+        cx, cy,
+        ex, ey,
+        thickness: Math.max(2, scene.mainBranch.thickness * (0.3 + seededRandom() * 0.3)),
+        delay: seededRandom() * 0.3
+      });
+    }
+
+    // Leaves along main branch and sub-branches
+    function addLeaves(points, count) {
+      for (let i = 0; i < count; i++) {
+        const t = 0.1 + seededRandom() * 0.85;
+        const idx = Math.floor(t * (points.length - 1));
+        const pt = points[Math.min(idx, points.length - 1)];
+        const angle = -Math.PI * 0.3 + seededRandom() * Math.PI * 0.6 + Math.PI * 0.5;
+        const size = W * (0.008 + seededRandom() * 0.012);
+        const green = seededRandom() > 0.5 ? '#7BA05B' : '#9BBB7A';
+        scene.leaves.push({
+          x: pt.x + (seededRandom() - 0.5) * 8,
+          y: pt.y + (seededRandom() - 0.5) * 8,
+          angle, size, color: green,
+          delay: seededRandom() * 0.4
+        });
+      }
+    }
+
+    // Sample points along main branch
+    const mainPts = [];
+    for (let i = 0; i <= 40; i++) mainPts.push(mainPt(i / 40));
+    addLeaves(mainPts, 25 + Math.floor(seededRandom() * 10));
+
+    // Sample points along sub-branches and add leaves
+    for (const sb of scene.subBranches) {
+      const pts = [];
+      for (let i = 0; i <= 10; i++) {
+        const t = i / 10;
+        const u = 1 - t;
+        pts.push({
+          x: u*u*sb.sx + 2*u*t*sb.cx + t*t*sb.ex,
+          y: u*u*sb.sy + 2*u*t*sb.cy + t*t*sb.ey
+        });
+      }
+      addLeaves(pts, 4 + Math.floor(seededRandom() * 5));
+    }
+
+    // Flower clusters (racemes) hanging from branches
+    const clusterCount = 8 + Math.floor(seededRandom() * 5);
+    for (let i = 0; i < clusterCount; i++) {
+      let ax, ay;
+      // Attach to sub-branch tips or mid-points mostly
+      if (i < scene.subBranches.length && seededRandom() > 0.3) {
+        const sb = scene.subBranches[i % scene.subBranches.length];
+        const t = 0.5 + seededRandom() * 0.5;
+        const u = 1 - t;
+        ax = u*u*sb.sx + 2*u*t*sb.cx + t*t*sb.ex;
+        ay = u*u*sb.sy + 2*u*t*sb.cy + t*t*sb.ey;
+      } else {
+        const t = 0.2 + seededRandom() * 0.7;
+        const pt = mainPt(t);
+        ax = pt.x + (seededRandom() - 0.5) * 10;
+        ay = pt.y;
+      }
+
+      const flowerCount = 15 + Math.floor(seededRandom() * 20);
+      const clusterLen = H * (0.08 + seededRandom() * 0.12);
+      const flowers = [];
+      for (let f = 0; f < flowerCount; f++) {
+        const ft = f / flowerCount;
+        // Taper: wider at top, narrower at bottom
+        const spread = (1 - ft * 0.7) * W * 0.018;
+        const fx = (seededRandom() - 0.5) * spread * 2;
+        const fy = ft * clusterLen;
+        const size = W * (0.003 + (1 - ft) * 0.004) * (0.7 + seededRandom() * 0.6);
+        // Color gradient: lighter at tips
+        const colorChoice = seededRandom();
+        let color;
+        if (ft > 0.7) color = '#D0B8E8';
+        else if (colorChoice < 0.4) color = '#B8A0D0';
+        else if (colorChoice < 0.7) color = '#D0B8E8';
+        else color = '#9080B0';
+
+        flowers.push({ ox: fx, oy: fy, size, color, delay: seededRandom() * 0.3 + ft * 0.3 });
+      }
+
+      scene.flowerClusters.push({
+        ax, ay, flowers, clusterLen,
+        delay: seededRandom() * 0.5,
+        swayPhase: seededRandom() * Math.PI * 2,
+        swayAmp: 2 + seededRandom() * 3
+      });
+    }
+
+    return scene;
+  }
+
+  let scene = generateScene();
+
+  window.addEventListener('resize', () => {
+    resize();
+    scene = generateScene();
+  });
+
+  // --- Drawing ---
+  function drawBezierBranch(x0, y0, cx1, cy1, cx2, cy2, x1, y1, progress, thickness) {
+    if (progress <= 0) return;
+    const p = easeInOutCubic(progress);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+
+    // Draw partial cubic bezier by subdividing
+    const steps = 60;
+    const maxStep = Math.floor(p * steps);
+    for (let i = 1; i <= maxStep; i++) {
+      const t = i / steps;
+      const u = 1 - t;
+      const x = u*u*u*x0 + 3*u*u*t*cx1 + 3*u*t*t*cx2 + t*t*t*x1;
+      const y = u*u*u*y0 + 3*u*u*t*cy1 + 3*u*t*t*cy2 + t*t*t*y1;
+      ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = '#8B7355';
+    ctx.lineWidth = thickness;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
+  function drawQuadBranch(sx, sy, cx, cy, ex, ey, progress, thickness) {
+    if (progress <= 0) return;
+    const p = easeOutCubic(progress);
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    const steps = 20;
+    const maxStep = Math.floor(p * steps);
+    for (let i = 1; i <= maxStep; i++) {
+      const t = i / steps;
+      const u = 1 - t;
+      const x = u*u*sx + 2*u*t*cx + t*t*ex;
+      const y = u*u*sy + 2*u*t*cy + t*t*ey;
+      ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = '#8B7355';
+    ctx.lineWidth = thickness;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  }
+
+  function drawLeaf(x, y, angle, size, color, progress) {
+    if (progress <= 0) return;
+    const s = easeOutCubic(progress) * size;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.scale(s, s);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(1.2, -0.5, 2, -0.3, 3, 0);
+    ctx.bezierCurveTo(2, 0.3, 1.2, 0.5, 0, 0);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.85;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function drawFlower(x, y, size, color, progress) {
+    if (progress <= 0) return;
+    const s = easeOutCubic(progress) * size;
+    if (s < 0.5) return;
+    ctx.beginPath();
+    // Small petal-like flower: 4 overlapping ellipses
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.globalAlpha = 0.8 * Math.min(1, progress * 2);
+    ctx.fillStyle = color;
+    for (let p = 0; p < 4; p++) {
+      ctx.beginPath();
+      ctx.ellipse(
+        Math.cos(p * Math.PI / 2) * s * 0.3,
+        Math.sin(p * Math.PI / 2) * s * 0.3,
+        s * 0.7, s * 0.45,
+        p * Math.PI / 2, 0, Math.PI * 2
+      );
+      ctx.fill();
+    }
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, s * 0.25, 0, Math.PI * 2);
+    ctx.fillStyle = '#E8D8F4';
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  // --- Main loop ---
+  let startTime = null;
+  let globalAlpha = 1;
+
+  function render(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = (timestamp - startTime) / 1000;
+    const cycleTime = elapsed % TOTAL_CYCLE;
+
+    // Fade
+    const fadeProgress = phaseProgress(cycleTime, PHASE_FADE[0], PHASE_FADE[1]);
+    globalAlpha = 1 - easeInCubic(fadeProgress);
+    if (fadeProgress >= 1) {
+      startTime = timestamp;
+    }
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#FFF8F0';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    ctx.globalAlpha = globalAlpha;
+
+    // 1) Main branch
+    const mainProgress = phaseProgress(cycleTime, PHASE_MAIN_BRANCH[0], PHASE_MAIN_BRANCH[1]);
+    const mb = scene.mainBranch;
+    drawBezierBranch(mb.x0, mb.y0, mb.cx1, mb.cy1, mb.cx2, mb.cy2, mb.x1, mb.y1, mainProgress, mb.thickness);
+
+    // Also draw a thinner secondary branch line for natural look
+    if (mainProgress > 0.1) {
+      ctx.globalAlpha = globalAlpha * 0.3;
+      drawBezierBranch(mb.x0, mb.y0, mb.cx1, mb.cy1 - 3, mb.cx2, mb.cy2 + 3, mb.x1, mb.y1, mainProgress, mb.thickness * 1.6);
+      ctx.globalAlpha = globalAlpha;
+    }
+
+    // 2) Sub-branches
+    const subProgress = phaseProgress(cycleTime, PHASE_SUB_BRANCHES[0], PHASE_SUB_BRANCHES[1]);
+    for (const sb of scene.subBranches) {
+      // Only draw if main branch has reached this point
+      const branchReady = mainProgress >= sb.mainT;
+      if (!branchReady) continue;
+      const p = Math.max(0, Math.min(1, (subProgress - sb.delay) / (1 - sb.delay)));
+      drawQuadBranch(sb.sx, sb.sy, sb.cx, sb.cy, sb.ex, sb.ey, p, sb.thickness);
+    }
+
+    // 3) Leaves
+    const leafProgress = phaseProgress(cycleTime, PHASE_LEAVES[0], PHASE_LEAVES[1]);
+    for (const leaf of scene.leaves) {
+      const p = Math.max(0, Math.min(1, (leafProgress - leaf.delay) / (1 - leaf.delay)));
+      drawLeaf(leaf.x, leaf.y, leaf.angle, leaf.size, leaf.color, p);
+    }
+
+    // 4) Flower clusters
+    const flowerProgress = phaseProgress(cycleTime, PHASE_FLOWERS[0], PHASE_FLOWERS[1]);
+    const isSwaying = cycleTime > PHASE_FLOWERS[1];
+    const swayTime = elapsed; // continuous for smooth sway
+
+    for (const cluster of scene.flowerClusters) {
+      const cp = Math.max(0, Math.min(1, (flowerProgress - cluster.delay) / (1 - cluster.delay)));
+      if (cp <= 0) continue;
+
+      // Sway offset
+      let swayX = 0;
+      if (isSwaying || cp > 0.5) {
+        const swayStrength = isSwaying ? 1 : (cp - 0.5) * 2;
+        swayX = Math.sin(swayTime * 0.8 + cluster.swayPhase) * cluster.swayAmp * swayStrength;
+      }
+
+      // Draw thin hanging stem
+      const stemLen = cluster.clusterLen * easeOutCubic(Math.min(1, cp * 1.5));
+      ctx.beginPath();
+      ctx.moveTo(cluster.ax, cluster.ay);
+      ctx.quadraticCurveTo(
+        cluster.ax + swayX * 0.5, cluster.ay + stemLen * 0.5,
+        cluster.ax + swayX, cluster.ay + stemLen
+      );
+      ctx.strokeStyle = '#9B8B6B';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // Draw flowers
+      for (const fl of cluster.flowers) {
+        const fp = Math.max(0, Math.min(1, (cp - fl.delay * 0.5) / (1 - fl.delay * 0.5)));
+        if (fp <= 0) continue;
+        // Position with sway
+        const ratio = fl.oy / cluster.clusterLen;
+        const fx = cluster.ax + fl.ox + swayX * ratio;
+        const fy = cluster.ay + fl.oy * easeOutCubic(Math.min(1, cp * 1.5));
+        drawFlower(fx, fy, fl.size, fl.color, fp);
+      }
+    }
+
+    ctx.restore();
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+})();
+</script>
+</body>
+</html>

@@ -196,7 +196,7 @@ nav a.active {
 }
 
 .sprout svg {
-    animation: sprout-sway 3s ease-in-out infinite;
+    animation: sprout-sway 4s ease-in-out infinite;
     transform-origin: bottom center;
 }
 
@@ -215,8 +215,8 @@ nav a.active {
 
 @keyframes sprout-sway {
     0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(5deg); }
-    75% { transform: rotate(-5deg); }
+    25% { transform: rotate(8deg); }
+    75% { transform: rotate(-8deg); }
 }
 
 /* ====== ABOUT ====== */
