@@ -8,13 +8,18 @@
     <meta property="og:title" content="Samy Bettaieb - Cybersecurity Researcher">
     <meta property="og:description" content="PhD student in Computer Security at UCLouvain. ML-based malware detection, adversarial robustness, smart contract security.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="images/panda_small.png">
+    <meta property="og:url" content="https://samybtt.github.io/">
+    <meta property="og:image" content="https://samybtt.github.io/images/panda_small.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="theme-color" content="#f8f4e9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1a1410" media="(prefers-color-scheme: dark)">
+    <link rel="canonical" href="https://samybtt.github.io/">
     <link rel="icon" type="image/png" href="images/panda_small.png">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -29,7 +34,7 @@
         </nav>
     </header>
 
-    <section id="about" class="section fade-in about-decorated">
+    <section id="about" class="section fade-in">
         <div class="about-image">
             <img src="images/panda_small.png" alt="Samy Bettaieb">
             <h1>Samy Bettaieb</h1>
@@ -50,8 +55,8 @@
             </div>
         </div>
         <div class="description">
-            <h2 class="hero-tagline">Hello there!
-                <svg class="dancing-melon" width="46" height="58" viewBox="-5 0 60 65" xmlns="http://www.w3.org/2000/svg">
+            <p class="hero-tagline">Hello there!
+                <svg class="hero-melon" width="46" height="58" viewBox="-5 0 60 65" xmlns="http://www.w3.org/2000/svg">
                     <!-- Tendril/vine on top -->
                     <g class="melon-tendril">
                         <path d="M25 11 Q25 7 26 4" stroke="#3a7a2a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
@@ -79,47 +84,30 @@
                     <!-- Highlight -->
                     <ellipse cx="22" cy="23" rx="6" ry="7" fill="#b0dd88" opacity="0.25"/>
                     <!-- Eyes -->
-                    <circle cx="21" cy="24" r="1.4" fill="#2a1a0a"/>
-                    <circle cx="29" cy="24" r="1.4" fill="#2a1a0a"/>
+                    <circle class="melon-eye" cx="21" cy="24" r="1.4" fill="#2a1a0a"/>
+                    <circle class="melon-eye" cx="29" cy="24" r="1.4" fill="#2a1a0a"/>
+                    <!-- Cheeks -->
+                    <ellipse cx="18" cy="27.2" rx="1.8" ry="1.1" fill="#c96a4a" opacity="0.22"/>
+                    <ellipse cx="32" cy="27.2" rx="1.8" ry="1.1" fill="#c96a4a" opacity="0.22"/>
                     <!-- Smile -->
                     <path d="M20 29 Q25 33 30 29" stroke="#2a1a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
-                    <!-- Left arm -->
-                    <g class="melon-wave-arm">
-                        <line x1="11" y1="26" x2="5" y2="21" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                        <g class="melon-left-forearm">
-                            <line x1="5" y1="21" x2="1" y2="16" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                            <circle cx="1" cy="16" r="1.5" fill="#2a1a0a"/>
-                        </g>
+                    <!-- Left arm, resting -->
+                    <path class="ink" d="M11 27 Q6 30 2.5 29" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <circle class="ink-fill" cx="2.5" cy="29" r="1.5" fill="#2a1a0a"/>
+                    <!-- Right arm, raised and waving -->
+                    <g class="melon-wave">
+                        <path class="ink" d="M39 25 C43 24 46.5 20 47.5 15.5" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                        <circle class="ink-fill" cx="47.5" cy="15.5" r="1.6" fill="#2a1a0a"/>
                     </g>
-                    <!-- Right arm -->
-                    <g class="melon-right-arm">
-                        <line x1="39" y1="26" x2="45" y2="21" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                        <g class="melon-right-forearm">
-                            <line x1="45" y1="21" x2="49" y2="16" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                            <circle cx="49" cy="16" r="1.5" fill="#2a1a0a"/>
-                        </g>
-                    </g>
-                    <!-- Left leg -->
-                    <g class="melon-left-leg">
-                        <line x1="18" y1="40" x2="16" y2="48" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                        <g class="melon-left-shin">
-                            <line x1="16" y1="48" x2="14" y2="56" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                            <path d="M14 56 Q11 57 10 56" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                        </g>
-                    </g>
-                    <!-- Right leg -->
-                    <g class="melon-right-leg">
-                        <line x1="32" y1="40" x2="34" y2="48" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                        <g class="melon-right-shin">
-                            <line x1="34" y1="48" x2="36" y2="56" stroke="#2a1a0a" stroke-width="1.5" stroke-linecap="round"/>
-                            <path d="M36 56 Q39 57 40 56" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                        </g>
-                    </g>
+                    <!-- Legs, relaxed -->
+                    <path class="ink" d="M18 40 Q16.5 48 15 55 Q12 56.5 10.5 55.5" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <path class="ink" d="M32 40 Q33.5 48 35 55 Q38 56.5 39.5 55.5" stroke="#2a1a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
                 </svg>
-            </h2>
+            </p>
             <p>I'm a PhD student in Computer Security at UCLouvain (ICTEAM), supervised by Pr. Etienne Rivière. I work on machine learning-based malware detection, with a focus on feature representations, evaluation methodology, and adversarial robustness. My work covers Windows PE malware and smart contract security.</p>
         </div>
     </section>
+
 
     <section id="papers" class="section fade-in">
         <h2>Publications</h2>
@@ -137,9 +125,9 @@
                 24th IEEE International Conference on Trust, Security and Privacy in Computing and Communications (TrustCom), Guiyang, China
             </div>
             <div class="paper-links">
-                [<a href="http://hdl.handle.net/2078.1/307301" target="_blank">PDF</a>]
-                [<a href="https://github.com/CloudLargeScale-UCLouvain/malware-graph-reduction" target="_blank">Code</a>]
-                [<a href="https://www.kaggle.com/datasets/sigehmireglbjevf/api-call-graphs-reduction-strategies" target="_blank">Datasets</a>]
+                <a class="chip" href="http://hdl.handle.net/2078.1/307301" target="_blank"><i class="far fa-file-pdf"></i>PDF</a>
+                <a class="chip" href="https://github.com/CloudLargeScale-UCLouvain/malware-graph-reduction" target="_blank"><i class="fab fa-github"></i>Code</a>
+                <a class="chip" href="https://www.kaggle.com/datasets/sigehmireglbjevf/api-call-graphs-reduction-strategies" target="_blank"><i class="fas fa-database"></i>Datasets</a>
             </div>
         </div>
 
@@ -154,7 +142,7 @@
                 Workshop on Security and Artificial Intelligence (SECAI), co-located with ESORICS 2025, Toulouse, France
             </div>
             <div class="paper-links">
-                [<a href="http://hdl.handle.net/2078.1/307299" target="_blank">PDF</a>]
+                <a class="chip" href="http://hdl.handle.net/2078.1/307299" target="_blank"><i class="far fa-file-pdf"></i>PDF</a>
             </div>
         </div>
 
@@ -170,9 +158,9 @@
                 <span class="award-badge"><i class="fas fa-trophy"></i> Best Paper Award</span>
             </div>
             <div class="paper-links">
-                [<a href="https://ieeexplore.ieee.org/document/11129492" target="_blank">PDF</a>]
-                [<a href="https://github.com/samybtt/comparison-tabular-graph-ml-malware" target="_blank">Code</a>]
-                [<a href="https://www.kaggle.com/sigehmireglbjevf/datasets" target="_blank">Datasets</a>]
+                <a class="chip" href="https://ieeexplore.ieee.org/document/11129492" target="_blank"><i class="far fa-file-pdf"></i>PDF</a>
+                <a class="chip" href="https://github.com/samybtt/comparison-tabular-graph-ml-malware" target="_blank"><i class="fab fa-github"></i>Code</a>
+                <a class="chip" href="https://www.kaggle.com/sigehmireglbjevf/datasets" target="_blank"><i class="fas fa-database"></i>Datasets</a>
             </div>
         </div>
 
@@ -189,14 +177,22 @@
                 Annual Computer Security Applications Conference Workshops (ACSAC Workshops), 2024
             </div>
             <div class="paper-links">
-                [<a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10917792" target="_blank">PDF</a>]
+                <a class="chip" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10917792" target="_blank"><i class="far fa-file-pdf"></i>PDF</a>
             </div>
         </div>
     </section>
 
+
     <section id="experience" class="section fade-in">
         <h2>Education & Professional Experience</h2>
         <div class="timeline-wrapper">
+            <div class="timeline-entry">
+                <img src="images/unine_logo.jpeg" alt="Université de Neuchâtel Logo">
+                <div>
+                    <h4>Visiting Researcher</h4>
+                    <p>June — August 2026 | Université de Neuchâtel, Switzerland</p>
+                </div>
+            </div>
             <div class="timeline-entry">
                 <img src="images/uclouvain_logo_square.jpeg" alt="UCLouvain Logo">
                 <div>
@@ -221,6 +217,7 @@
         </div>
     </section>
 
+
     <section id="contact" class="section fade-in">
         <h2>Contact</h2>
         <div class="contact-card">
@@ -232,13 +229,49 @@
                 <i class="fas fa-copy"></i>
             </button>
         </div>
+        <p class="contact-location">ICTEAM, UCLouvain &middot; Louvain-la-Neuve, Belgium</p>
     </section>
 
     <footer>
-        &copy; 2025 Samy Bettaieb
+        &copy; 2026 Samy Bettaieb
     </footer>
 
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Samy Bettaieb",
+        "givenName": "Samy",
+        "familyName": "Bettaieb",
+        "jobTitle": "PhD Student in Computer Security",
+        "url": "https://samybtt.github.io/",
+        "image": "https://samybtt.github.io/images/panda_small.png",
+        "email": "samy.bettaieb@uclouvain.be",
+        "affiliation": {
+            "@type": "CollegeOrUniversity",
+            "name": "UCLouvain — ICTEAM",
+            "url": "https://uclouvain.be/en/research-institutes/icteam"
+        },
+        "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Université Catholique de Louvain"
+        },
+        "knowsAbout": [
+            "Machine learning-based malware detection",
+            "Adversarial robustness",
+            "Windows PE malware analysis",
+            "Smart contract security",
+            "Evaluation methodology for security machine learning"
+        ],
+        "sameAs": [
+            "https://github.com/samybtt",
+            "https://www.linkedin.com/in/samy-bettaieb-961133237/",
+            "https://scholar.google.com/citations?user=51qJkzMAAAAJ&hl=en",
+            "https://orcid.org/0009-0003-8851-9930"
+        ]
+    }
+    </script>
+
     <script src="js/main.js"></script>
-    <script src="js/sprouts.js"></script>
 </body>
 </html>

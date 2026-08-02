@@ -6,6 +6,8 @@ function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
     themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    themeToggle.setAttribute('aria-label',
+        theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
 }
 
 // Initialize theme: stored preference > system preference > light
