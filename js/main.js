@@ -20,20 +20,6 @@ themeToggle.addEventListener('click', () => {
     setTheme(current === 'dark' ? 'light' : 'dark');
 });
 
-// Scroll fade-in animations
-const fadeElements = document.querySelectorAll('.fade-in');
-
-const fadeObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            fadeObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.1 });
-
-fadeElements.forEach((el) => fadeObserver.observe(el));
-
 // Active nav link on scroll
 const sections = document.querySelectorAll('.section');
 const navLinks = document.querySelectorAll('nav a[href^="#"]');
